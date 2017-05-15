@@ -2,18 +2,20 @@ local wibox = require("wibox")
 local awful = require("awful")
 local naughty = require("naughty")
 local watch = require("awful.widget.watch")
-
+local xresources = require("beautiful.xresources")
+local dpi = xresources.apply_dpi
 -- acpi sample outputs
 -- Battery 0: Discharging, 75%, 01:51:38 remaining
 -- Battery 0: Charging, 53%, 00:57:43 until charged
 
 local path_to_icons = "/usr/share/icons/Arc/status/symbolic/"
+local warning_displayed = false
 
-battery_widget = wibox.widget { 
+battery_widget = wibox.widget {
     {
         id = "icon",
-        widget = wibox.widget.imagebox, 
-        resize = false
+        widget = wibox.widget.imagebox,
+        resize = true
     },
     layout = wibox.container.margin(brightness_icon, 0, 0, 3),
     set_image = function(self, path)
@@ -36,15 +38,21 @@ watch(
         local batteryType
         local _, status, charge_str, time = string.match(stdout, '(.+): (%a+), (%d?%d%d)%%,? ?.*')
         local charge = tonumber(charge_str)
-        if (charge >= 0 and charge < 15) then 
-            batteryType="battery-empty%s-symbolic"
+
+        if (charge < 15) then
             show_battery_warning()
+        else
+            warning_displayed = false
+        end
+
+        if (charge >= 0 and charge < 15) then
+            batteryType="battery-empty%s-symbolic"
         elseif (charge >= 15 and charge < 40) then batteryType="battery-caution%s-symbolic"
         elseif (charge >= 40 and charge < 60) then batteryType="battery-low%s-symbolic"
         elseif (charge >= 60 and charge < 80) then batteryType="battery-good%s-symbolic"
         elseif (charge >= 80 and charge <= 100) then batteryType="battery-full%s-symbolic"
         end
-        if status == 'Charging' then 
+        if status == 'Charging' then
             batteryType = string.format(batteryType,'-charging')
         else
             batteryType = string.format(batteryType,'')
@@ -74,15 +82,15 @@ watch(
 --battery_widget:connect_signal("mouse::enter", function() show_battery_status() end)
 
 function show_battery_warning()
-    naughty.notify{
-    icon = "/home/pashik/.config/awesome/nichosi.png",
-    icon_size=100,
-    text = "Huston, we have a problem",
-    title = "Battery is dying",
-    timeout = 5, hover_timeout = 0.5,
-    position = "bottom_right",
-    bg = "#F06060",
-    fg = "#EEE9EF",
-    width = 300,
-}
+    if (warning_displayed == false) then
+        warning_displayed = true
+        naughty.notify{
+            icon = path_to_icons .. "battery-empty-symbolic.svg",
+            icon_size=dpi(50),
+            text = "Huston, we have a problem",
+            title = "Battery is dying",
+            timeout = 30, hover_timeout = 0.5,
+            width = dpi(300),
+        }
+    end
 end
