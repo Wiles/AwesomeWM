@@ -3,7 +3,7 @@ local wibox = require("wibox")
 local watch = require("awful.widget.watch")
 
 local path_to_icons = "/usr/share/icons/Arc/status/symbolic/"
-local interface = "wlan0"
+local interface = "wlp2s0"
 
 wifi_widget = wibox.widget {
     {
