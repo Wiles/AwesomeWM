@@ -8,7 +8,7 @@ local dpi = xresources.apply_dpi
 -- Battery 0: Discharging, 75%, 01:51:38 remaining
 -- Battery 0: Charging, 53%, 00:57:43 until charged
 
-local path_to_icons = "/usr/share/icons/Arc/status/symbolic/"
+local path_to_icons = "/home/sam/.icons/numix-icon-theme/Numix/24/status/"
 local warning_displayed = false
 
 battery_widget = wibox.widget {
@@ -33,24 +33,29 @@ battery_popup = awful.tooltip({objects = {battery_widget}})
 -- beautiful.tooltip_bg = beautiful.bg_normal
 
 watch(
-    "acpi", 10,
+    "acpi", 1,
     function(widget, stdout, stderr, exitreason, exitcode)
         local batteryType
         local _, status, charge_str, time = string.match(stdout, '(.+): (%a+), (%d?%d%d)%%,? ?.*')
         local charge = tonumber(charge_str)
 
-        if (charge < 15) then
+        if (charge < 10) then
             show_battery_warning()
         else
             warning_displayed = false
         end
 
-        if (charge >= 0 and charge < 15) then
-            batteryType="battery-empty%s-symbolic"
-        elseif (charge >= 15 and charge < 40) then batteryType="battery-caution%s-symbolic"
-        elseif (charge >= 40 and charge < 60) then batteryType="battery-low%s-symbolic"
-        elseif (charge >= 60 and charge < 80) then batteryType="battery-good%s-symbolic"
-        elseif (charge >= 80 and charge <= 100) then batteryType="battery-full%s-symbolic"
+        if (charge >= 0 and charge < 10) then batteryType="battery-000%s"
+        elseif (charge >= 10 and charge < 20) then batteryType="battery-010%s"
+        elseif (charge >= 20 and charge < 30) then batteryType="battery-020%s"
+        elseif (charge >= 30 and charge < 40) then batteryType="battery-030%s"
+        elseif (charge >= 40 and charge < 50) then batteryType="battery-040%s"
+        elseif (charge >= 50 and charge < 60) then batteryType="battery-050%s"
+        elseif (charge >= 60 and charge < 70) then batteryType="battery-060%s"
+        elseif (charge >= 70 and charge < 80) then batteryType="battery-070%s"
+        elseif (charge >= 80 and charge < 90) then batteryType="battery-080%s"
+        elseif (charge >= 90 and charge < 100) then batteryType="battery-090%s"
+        else batteryType="battery-100%s"
         end
         if status == 'Charging' then
             batteryType = string.format(batteryType,'-charging')
