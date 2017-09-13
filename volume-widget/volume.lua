@@ -2,7 +2,7 @@ local awful = require("awful")
 local wibox = require("wibox")
 local watch = require("awful.widget.watch")
 
-local path_to_icons = "/usr/share/icons/Arc/status/symbolic/"
+local path_to_icons = "/home/sam/.icons/numix-icon-theme/Numix/24/status/"
 
 volume_widget = wibox.widget {
     {
@@ -39,12 +39,12 @@ watch(
         local mute = string.match(stdout, "%[(o%D%D?)%]")
         local volume = string.match(stdout, "(%d?%d?%d)%%")
         volume = tonumber(string.format("% 3d", volume))
-        local volume_icon_name
-        if mute == "off" then volume_icon_name="audio-volume-muted-symbolic"
-        elseif (volume >= 0 and volume < 25) then volume_icon_name="audio-volume-muted-symbolic"
-        elseif (volume >= 25 and volume < 50) then volume_icon_name="audio-volume-low-symbolic"
-        elseif (volume >= 50 and volume < 75) then volume_icon_name="audio-volume-medium-symbolic"
-        elseif (volume >= 75 and volume <= 100) then volume_icon_name="audio-volume-high-symbolic"
+        local volume_icon_names
+        if mute == "off" then volume_icon_name="audio-volume-muted"
+        elseif (volume == 0) then volume_icon_name="audio-volume-zero-panel"
+        elseif (volume > 0 and volume < 33) then volume_icon_name="audio-volume-low"
+        elseif (volume >= 33 and volume < 66) then volume_icon_name="audio-volume-medium"
+        else volume_icon_name="audio-volume-high"
         end
         widget.image = path_to_icons .. volume_icon_name .. ".svg"
 
